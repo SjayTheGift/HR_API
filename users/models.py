@@ -3,6 +3,8 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
+from django.dispatch import receiver
+from django.db.models.signals import pre_save, post_save
 
 
 class UserManager(BaseUserManager):
@@ -57,10 +59,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Department(models.Model):
     name = models.CharField(max_length=200, unique=True)
+    def __str__(self):
+        return self.name
 
 
 class Designation(models.Model):
     name = models.CharField(max_length=200, unique=True)
+    def __str__(self):
+        return self.name
 
 
 class Employee(models.Model):
@@ -68,13 +74,27 @@ class Employee(models.Model):
         Male = 'Male'
         Female = 'Female'
         
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee')
-    phone = models.CharField(max_length=10)
-    gender = models.CharField(max_length=50, choices=GenderType.choices, default=GenderType.Male)
-    title = models.ForeignKey(Designation, on_delete=models.DO_NOTHING, related_name='designation')
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee')
+    email = models.EmailField(_('email address'), unique=True)
+    first_name = models.CharField(max_length=200, null=True, blank=True)
+    last_name = models.CharField(max_length=200, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.DO_NOTHING, related_name='department')
-    birth_date = models.DateField(default='yyyy-mm-dd')
+    designation = models.ForeignKey(Designation, on_delete=models.DO_NOTHING, related_name='designation')
+    phone = models.CharField(max_length=20)
+    gender = models.CharField(max_length=50, choices=GenderType.choices, default=GenderType.Male)
+    birth_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return f'{self.first_name} {self.last_name}'
+
+    
+    # @receiver(post_save, sender = User)
+    # def create_employee(sender,instance,created,**kwargs):
+    #     if created:
+    #         Employee.objects.create(user=instance)
+
+    # @receiver(post_save, sender = User)
+    # def save_employee(sender,instance,created,**kwargs):
+    #     if instance.is_employee:
+    #         instance.employee.save()
     

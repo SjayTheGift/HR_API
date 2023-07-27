@@ -4,6 +4,7 @@ from django.db import models
 class LeaveType(models.Model):
     title = models.CharField(max_length=200)
     days = models.IntegerField()
+    created_on = models.DateField(auto_now=True)
 
 
 class LeaveApplication(models.Model):
