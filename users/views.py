@@ -25,33 +25,40 @@ class LogInView(TokenObtainPairView): # new
 class EmployeeListView(generics.ListAPIView):
     queryset = Employee.objects.all()
     serializer_class = UserDisplaySerializer
+    permission_class = (IsAuthenticated)
     
 
 class EmployeeSignUpView(generics.CreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = UserCreateSerializer
+    permission_class = (IsAuthenticated)
 
 
 class EmployeeDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee.objects.all()
     serializer_class = UserCreateSerializer
+    permission_class = (IsAuthenticated)
 
 
 class DepartmentListCreateView(generics.ListCreateAPIView):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
+    permission_class = (IsAuthenticated)
 
 
 class DepartmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
+    permission_class = (IsAuthenticated)
 
 
 class DesignationListCreateView(generics.ListCreateAPIView):
     queryset = Designation.objects.all()
     serializer_class = DesignationSerializer
+    permission_class = (IsAuthenticated)
 
 
 class DesignationDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Designation.objects.all()
     serializer_class = DesignationSerializer
+    permission_class = (IsAuthenticated)

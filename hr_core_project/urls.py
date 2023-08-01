@@ -11,6 +11,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('', include('users.urls'), name='users'),
+    path('', include('leaves.urls'), name='leave'),
 ]
 
 if settings.DEBUG:
