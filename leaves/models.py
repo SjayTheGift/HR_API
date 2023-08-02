@@ -21,7 +21,7 @@ class LeaveApplication(models.Model):
         Rejected = 'rejected'
 
     employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='employee')
-    leave = models.ForeignKey(LeaveType, on_delete=models.DO_NOTHING, related_name='leave_type')
+    leave = models.ForeignKey(LeaveType, on_delete=models.SET_NULL, related_name='leave_type', null=True)
     from_date = models.DateField()
     to_date = models.DateField()
     description = models.TextField()
