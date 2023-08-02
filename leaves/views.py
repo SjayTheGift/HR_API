@@ -1,7 +1,7 @@
 from rest_framework import generics, mixins, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.backends import TokenBackend
 from django.http import Http404
 from django.conf import settings
 
@@ -40,17 +40,17 @@ class UserLeavesView(APIView):
         """
         Return a list of all users.
         """
-        current_user = request.user.pk
-        # print(request.data)
+        # current_user = request.user.pk
+        user_id = request.META.get('HTTP_AUTHORIZATION')
 
-        # print(current_user)
+        # data = {'token': token}
+        # valid_data = TokenBackend(algorithm='HS256').decode(token,verify=False)
+        # user = valid_data['user']
+        # request.user = user
+        
 
-        # user_agent_info = request.META.get('HTTP_USER_AGENT', 'http://localhost:5173')[:255],
-        # print(user_agent_info)
-
-        print(settings.SIMPLE_JWT['USER_ID_FIELD'])
-
-        queryset = LeaveApplication.objects.filter(employee=current_user)
+# 
+        queryset = LeaveApplication.objects.filter(employee=user_id)
         serializer = LeaveApplicationSerializer(queryset, many=True)
         return Response(serializer.data)
 

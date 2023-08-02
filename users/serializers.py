@@ -58,7 +58,7 @@ class LogInSerializer(TokenObtainPairSerializer):
         is_hr = data_dict[0]['is_hr']
         is_employee = data_dict[0]['is_employee']
         
-        print(email, is_hr, is_employee)
+        print(user_query)
 
         user_data = {'email': str(email), 'is_hr': str(is_hr), 'is_employee': str(is_employee)}
 
