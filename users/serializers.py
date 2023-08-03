@@ -53,14 +53,15 @@ class LogInSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         user_query = User.objects.filter(email=user)
-        data_dict = [{'email': i.email, 'is_hr': i.is_hr, 'is_employee': i.is_employee} for i in user_query]
+        data_dict = [{'email': i.email, 'is_hr': i.is_hr, 'is_employee': i.is_employee, 'first_name': i.first_name} for i in user_query]
         email = data_dict[0]['email']
         is_hr = data_dict[0]['is_hr']
         is_employee = data_dict[0]['is_employee']
+        first_name = data_dict[0]['first_name']
         
         print(user_query)
 
-        user_data = {'email': str(email), 'is_hr': str(is_hr), 'is_employee': str(is_employee)}
+        user_data = {'email': str(email), 'is_hr': str(is_hr), 'is_employee': str(is_employee), 'first_name': str(first_name)}
 
         for key, value in user_data.items():
             if key != 'id':

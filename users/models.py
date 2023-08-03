@@ -55,16 +55,21 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    def total_users():
+        return User.objects.count()
 
 
 class Department(models.Model):
     name = models.CharField(max_length=200, unique=True)
+
     def __str__(self):
         return self.name
 
 
 class Designation(models.Model):
     name = models.CharField(max_length=200, unique=True)
+
     def __str__(self):
         return self.name
 
@@ -86,6 +91,9 @@ class Employee(models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+    
+    
 
     
     # @receiver(post_save, sender = User)

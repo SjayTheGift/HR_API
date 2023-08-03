@@ -5,10 +5,20 @@ from rest_framework_simplejwt.backends import TokenBackend
 from django.http import Http404
 from django.conf import settings
 
+from django.contrib.auth import get_user_model
+
 from .models import LeaveType, LeaveApplication
-from .serializers import LeaveTypeSerializer, LeaveApplicationSerializer
+from .serializers import (
+    LeaveTypeSerializer, 
+    LeaveApplicationSerializer,
+    LeaveApplicationCreateSerializer,
+    CountUserAndDepartment
+    )
 
 from users.models import Employee
+
+
+User = get_user_model()
 
 class LeaveTypeListCreateView(generics.ListCreateAPIView):
     queryset = LeaveType.objects.all()
@@ -36,6 +46,9 @@ class NewLeavesDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class UserLeavesView(APIView):
+    queryset = LeaveApplication.objects.all()
+    serializer_class = LeaveApplicationSerializer
+
     def get(self, request, *args, **kwargs):
         """
         Return a list of all users.
@@ -48,34 +61,25 @@ class UserLeavesView(APIView):
         # user = valid_data['user']
         # request.user = user
         
-
-# 
         queryset = LeaveApplication.objects.filter(employee=user_id)
         serializer = LeaveApplicationSerializer(queryset, many=True)
         return Response(serializer.data)
-
-    # def get_object(self, pk):
-    #     try:
-    #         return LeaveApplication.objects.get(pk=pk)
-    #     except LeaveApplication.DoesNotExist:
-    #         raise Http404
-
-    # def get(self, request, pk, format=None):
-    #     leave = self.get_object(pk)
-    #     serializer = LeaveApplicationSerializer(leave)
-    #     return Response(serializer.data)
-
-    # def put(self, request, pk, format=None):
-    #     snippet = self.get_object(pk)
-    #     serializer = LeaveApplicationSerializer(snippet, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # def delete(self, request, pk, format=None):
-    #     leave = self.get_object(pk)
-    #     leave.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
-
     
+
+
+class UserCreateLeavesView(APIView):
+ 
+    def post(self, request, format=None):
+        serializer = LeaveApplicationCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CountUserAndDepartmentView(APIView):
+    
+    def get(self, request, *args, **kwargs):
+        data = [{"data": 0,}]
+        serializer = CountUserAndDepartment(data, many=True)
+        return Response(serializer.data)

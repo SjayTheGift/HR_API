@@ -4,7 +4,9 @@ from .views import (
     LeaveTypeDetailView,
     NewLeavesView,
     NewLeavesDetailView,
-    UserLeavesView
+    UserLeavesView,
+    UserCreateLeavesView,
+    CountUserAndDepartmentView
 )
 
 urlpatterns = [
@@ -13,5 +15,7 @@ urlpatterns = [
     path('api/leave/leave-new/', NewLeavesView.as_view(), name='leave_type_new'),
     path('api/leave/leave-new/<int:pk>/', NewLeavesDetailView.as_view(), name='leave_type_detail'),
     path('api/leave/user-leave/', UserLeavesView.as_view(), name='user_leave'),
+    path('api/leave/user-leave/application/', UserCreateLeavesView.as_view(), name='user_leave'),
+    path('api/data/count/', CountUserAndDepartmentView.as_view(), name='data_count'),
     # path('api/login/', LogInView.as_view(), name='login'),
 ]

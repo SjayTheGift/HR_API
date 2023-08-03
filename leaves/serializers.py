@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import LeaveType, LeaveApplication
 from django.contrib.auth import get_user_model
 
+from users.models import Department
+
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
@@ -34,8 +36,35 @@ class LeaveApplicationSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-# class LeaveApplicationUpdateSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = LeaveApplication
-#         fields = ('id', 'from_date', 'to_date', 'description', 'date_applied', 'status')
 
+class LeaveApplicationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LeaveApplication
+        fields = ('id', 'from_date', 'to_date', 'description', 'date_applied', 'employee', 'leave')
+
+    def create(self, validated_data):
+        leave_application = LeaveApplication.objects.create(**validated_data)
+        return leave_application
+
+
+
+class CountUserAndDepartment(serializers.Serializer):
+    total_users = serializers.SerializerMethodField()
+    total_pending_leave = serializers.SerializerMethodField()
+    total_department = serializers.SerializerMethodField()
+    
+    class Meta:
+        fields = ('total_pending_leave', 'total_department', 'total_users',)
+    
+    def get_total_users(self, obj):
+        data = User.objects.count()
+        return data
+
+    def get_total_pending_leave(self, obj):
+        data = LeaveApplication.objects.filter(status='new').count()
+        return data
+
+    def get_total_department(self, obj):
+        data = Department.objects.filter().count()
+        return data
+        
