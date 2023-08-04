@@ -1,10 +1,11 @@
+import datetime
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
-from django.dispatch import receiver
-from django.db.models.signals import pre_save, post_save
+# from django.dispatch import receiver
+# from django.db.models.signals import pre_save, post_save
 
 
 class UserManager(BaseUserManager):
@@ -28,36 +29,18 @@ class UserManager(BaseUserManager):
         """
         Create and save a SuperUser with the given email and password.
         """
+        extra_fields.setdefault('is_hr', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
 
+        if extra_fields.get('is_hr') is not True:
+            raise ValueError(_('Superuser must have is_hr=True.'))
         if extra_fields.get('is_staff') is not True:
             raise ValueError(_('Superuser must have is_staff=True.'))
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
-
-
-class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(_('email address'), unique=True)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(default=timezone.now)
-    first_name = models.CharField(max_length=200, null=True, blank=True)
-    last_name = models.CharField(max_length=200, null=True, blank=True)
-    is_hr = models.BooleanField(default=False)
-    is_employee = models.BooleanField(default=False)
-
-    USERNAME_FIELD = 'email'
-
-    objects = UserManager()
-
-    def __str__(self):
-        return self.email
-    
-    def total_users():
-        return User.objects.count()
 
 
 class Department(models.Model):
@@ -74,35 +57,58 @@ class Designation(models.Model):
         return self.name
 
 
-class Employee(models.Model):
+class User(AbstractBaseUser, PermissionsMixin):
     class GenderType(models.TextChoices):
         Male = 'Male'
         Female = 'Female'
-        
-    # user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee')
+        Other = 'other'
+        Not_Known = 'Not Known'
+
     email = models.EmailField(_('email address'), unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    date_joined = models.DateTimeField(default=timezone.now)
     first_name = models.CharField(max_length=200, null=True, blank=True)
     last_name = models.CharField(max_length=200, null=True, blank=True)
-    department = models.ForeignKey(Department, on_delete=models.DO_NOTHING, related_name='department')
-    designation = models.ForeignKey(Designation, on_delete=models.DO_NOTHING, related_name='designation')
+    middle_name = models.CharField(max_length=200, null=True, blank=True)
+    is_hr = models.BooleanField(default=False)
+    is_employee = models.BooleanField(default=False)
+    start_date = models.DateField(_('Employment Date'),help_text='date of employment',blank=False,null=True)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name='department', null=True, blank=True)
+    designation = models.ForeignKey(Designation, on_delete=models.SET_NULL, related_name='designation', null=True, blank=True)
     phone = models.CharField(max_length=20)
     gender = models.CharField(max_length=50, choices=GenderType.choices, default=GenderType.Male)
-    birth_date = models.DateField(null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    created = models.DateTimeField(verbose_name=_('Created'),auto_now_add=True,null=True)
+    updated = models.DateTimeField(verbose_name=_('Updated'),auto_now=True,null=True)
+
+    USERNAME_FIELD = 'email'
+
+    objects = UserManager()
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return self.email
 
-    
-    
+    @property
+    def full_name(self):
+        fullname = ''
+        firstname = self.first_name
+        lastname = self.last_name
+        middle_name = self.middle_name
 
-    
-    # @receiver(post_save, sender = User)
-    # def create_employee(sender,instance,created,**kwargs):
-    #     if created:
-    #         Employee.objects.create(user=instance)
+        if (firstname and lastname) or middle_name is None:
+            fullname = f'{firstname} {lastname}'
+            return fullname
+        elif middle_name:
+            fullname = f'{firstname} {lastname} {middle_name}'
+            return fullname
+        return
 
-    # @receiver(post_save, sender = User)
-    # def save_employee(sender,instance,created,**kwargs):
-    #     if instance.is_employee:
-    #         instance.employee.save()
+    @property
+    def get_age(self):
+        current_year = datetime.date.today().year
+        date_of_birth_year = self.date_of_birth.year
+        if date_of_birth_year:
+            return current_year - date_of_birth_year
+        return
     
