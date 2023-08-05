@@ -5,9 +5,9 @@ from .views import (
     PendingLeavesView,
     PendingLeavesUpdateView,
     LeaveBalanceView,
-    # UserLeavesView,
-    # UserCreateLeavesView,
-    # CountUserAndDepartmentView
+    UserLeavesApplicationView,
+    UserCreateLeavesView,
+    CountUserAndDepartmentView
 )
 
 urlpatterns = [
@@ -16,8 +16,8 @@ urlpatterns = [
     path('api/leave/leave-pending/', PendingLeavesView.as_view(), name='leave_pending'),
     path('api/leave/leave-pending/<int:pk>/', PendingLeavesUpdateView.as_view(), name='leave_pending_update'),
     path('api/leave/leave-balance/', LeaveBalanceView.as_view(), name='leave_balance'),
-    # path('api/leave/user-leave/', UserLeavesView.as_view(), name='user_leave'),
-    # path('api/leave/user-leave/application/', UserCreateLeavesView.as_view(), name='user_leave_application'),
-    # path('api/data/count/', CountUserAndDepartmentView.as_view(), name='data_count'),
+    path('api/leave/user-leave/', UserLeavesApplicationView.as_view(), name='user_leave'),
+    path('api/leave/user-leave/application/', UserCreateLeavesView.as_view(), name='user_leave_application'),
+    path('api/data/count/', CountUserAndDepartmentView.as_view(), name='data_count'),
     # path('api/login/', LogInView.as_view(), name='login'),
 ]

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
+from datetime import datetime, timedelta
 
 User = get_user_model()
 
@@ -38,10 +39,27 @@ class LeaveApplication(models.Model):
     def leave_days(self):
         start_date = self.from_date
         end_date = self.to_date
+        current_date = start_date
+        # initializing business days count
+        num_business_days = 0
+        # to use in the future for holidays
+        holidays=['2011-07-01', '2011-07-04', '2011-07-17']
+
         if start_date > end_date:
-            return 0
-        dates = (end_date - start_date)
-        return dates.days
+            return num_business_days
+        
+        # looping through each day in the date range
+        while current_date <= end_date:
+            # checking if the current day is a weekday
+            if current_date.weekday() < 5:
+                num_business_days += 1
+            
+            if current_date == end_date:
+                num_business_days -= 1
+            # incrementing the current day by one day
+            current_date += timedelta(days=1)
+        
+        return num_business_days
 
     @property
     def unapproved_leave(self):

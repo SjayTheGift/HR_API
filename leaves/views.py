@@ -12,8 +12,8 @@ from .serializers import (
     LeaveTypeSerializer, 
     LeaveApplicationSerializer,
     LeaveAllocationSerializer,
-    # LeaveApplicationCreateSerializer,
-    # CountUserAndDepartment
+    LeaveApplicationCreateSerializer,
+    CountUserAndDepartment
     )
 
 User = get_user_model()
@@ -34,36 +34,36 @@ class LeaveTypeDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LeaveTypeSerializer
 
 
-# class UserCreateLeavesView(APIView):
+class UserCreateLeavesView(APIView):
  
-#     def post(self, request, format=None):
-#         serializer = LeaveApplicationCreateSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, format=None):
+        serializer = LeaveApplicationCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
-# class UserLeavesApplicationView(APIView):
-#     queryset = LeaveApplication.objects.all()
-#     serializer_class = LeaveApplicationSerializer
+class UserLeavesApplicationView(APIView):
+    queryset = LeaveApplication.objects.all()
+    serializer_class = LeaveApplicationSerializer
 
-#     def get(self, request, *args, **kwargs):
-#         """
-#         Return a list of all users.
-#         """
-#         # current_user = request.user.pk
-#         user_id = request.META.get('HTTP_AUTHORIZATION')
+    def get(self, request, *args, **kwargs):
+        """
+        Return a list of all users.
+        """
+        # current_user = request.user.pk
+        user_id = request.META.get('HTTP_AUTHORIZATION')
 
-#         # data = {'token': token}
-#         # valid_data = TokenBackend(algorithm='HS256').decode(token,verify=False)
-#         # user = valid_data['user']
-#         # request.user = user
+        # data = {'token': token}
+        # valid_data = TokenBackend(algorithm='HS256').decode(token,verify=False)
+        # user = valid_data['user']
+        # request.user = user
         
-#         queryset = LeaveApplication.objects.filter(employee=user_id)
-#         serializer = LeaveApplicationSerializer(queryset, many=True)
-#         return Response(serializer.data)
+        queryset = LeaveApplication.objects.filter(user=user_id)
+        serializer = LeaveApplicationSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 
@@ -81,7 +81,7 @@ class LeaveBalanceView(APIView):
         # user = valid_data['user']
         # request.user = user
         
-        queryset = LeaveBalance.objects.filter(user=2)
+        queryset = LeaveBalance.objects.filter(user=user_id)
         serializer = LeaveAllocationSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -125,9 +125,9 @@ class PendingLeavesUpdateView(generics.RetrieveUpdateAPIView):
 #         return Response(serializer.data)
 
 
-# class CountUserAndDepartmentView(APIView):
+class CountUserAndDepartmentView(APIView):
     
-#     def get(self, request, *args, **kwargs):
-#         data = [{"data": 0,}]
-#         serializer = CountUserAndDepartment(data, many=True)
-#         return Response(serializer.data)
+    def get(self, request, *args, **kwargs):
+        data = [{"data": 0,}]
+        serializer = CountUserAndDepartment(data, many=True)
+        return Response(serializer.data)
