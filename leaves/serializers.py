@@ -67,26 +67,4 @@ class LeaveApplicationCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         leave_application = LeaveApplication.objects.create(**validated_data)
         return leave_application
-
-
-
-class CountUserAndDepartment(serializers.Serializer):
-    total_users = serializers.SerializerMethodField()
-    total_pending_leave = serializers.SerializerMethodField()
-    total_department = serializers.SerializerMethodField()
-    
-    class Meta:
-        fields = ('total_pending_leave', 'total_department', 'total_users',)
-    
-    def get_total_users(self, obj):
-        data = User.objects.count()
-        return data
-
-    def get_total_pending_leave(self, obj):
-        data = LeaveApplication.objects.filter(status='pending').count()
-        return data
-
-    def get_total_department(self, obj):
-        data = Department.objects.filter().count()
-        return data
         

@@ -8,6 +8,7 @@ from .views import (
     DepartmentDetailView,
     DesignationListCreateView,
     DesignationDetailView,
+    CountUserAndDepartmentView,
 )
 
 urlpatterns = [
@@ -20,4 +21,5 @@ urlpatterns = [
       path('api/user/department/<int:pk>/', DepartmentDetailView.as_view(), name='department_detail'),
       path('api/user/designation/', DesignationListCreateView.as_view(), name='designation'),
       path('api/user/designation/<int:pk>/', DesignationDetailView.as_view(), name='designation_detail'),
+      path('api/data/count/', CountUserAndDepartmentView.as_view(), name='data_count'),
 ]

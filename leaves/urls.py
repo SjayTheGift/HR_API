@@ -7,7 +7,6 @@ from .views import (
     LeaveBalanceView,
     UserLeavesApplicationView,
     UserCreateLeavesView,
-    CountUserAndDepartmentView
 )
 
 urlpatterns = [
@@ -18,6 +17,4 @@ urlpatterns = [
     path('api/leave/leave-balance/', LeaveBalanceView.as_view(), name='leave_balance'),
     path('api/leave/user-leave/', UserLeavesApplicationView.as_view(), name='user_leave'),
     path('api/leave/user-leave/application/', UserCreateLeavesView.as_view(), name='user_leave_application'),
-    path('api/data/count/', CountUserAndDepartmentView.as_view(), name='data_count'),
-    # path('api/login/', LogInView.as_view(), name='login'),
 ]

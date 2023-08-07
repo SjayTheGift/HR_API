@@ -14,6 +14,7 @@ from .serializers import (
     UserSerializer,
     DepartmentSerializer,
     DesignationSerializer,
+    CountUserAndDepartmentSerializer,
     )
 from .models import Department, Designation
 
@@ -71,3 +72,11 @@ class DesignationDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DesignationSerializer
     # authentication_classes = [JWTAuthentication]
     # permission_classes = (IsAuthenticated)
+
+
+class CountUserAndDepartmentView(APIView):
+    
+    def get(self, request, *args, **kwargs):
+        data = [{"data": 0,}]
+        serializer = CountUserAndDepartmentSerializer(data, many=True)
+        return Response(serializer.data)

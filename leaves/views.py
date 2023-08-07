@@ -13,7 +13,6 @@ from .serializers import (
     LeaveApplicationSerializer,
     LeaveAllocationSerializer,
     LeaveApplicationCreateSerializer,
-    CountUserAndDepartment
     )
 
 User = get_user_model()
@@ -66,8 +65,6 @@ class UserLeavesApplicationView(APIView):
         return Response(serializer.data)
 
 
-
-
 class LeaveBalanceView(APIView):
     def get(self, request, *args, **kwargs):
         """
@@ -104,30 +101,3 @@ class PendingLeavesUpdateView(generics.RetrieveUpdateAPIView):
     queryset = LeaveApplication.objects.all()
     serializer_class = LeaveApplicationSerializer
 
-# class UserLeavesApplicationView(APIView):
-#     queryset = LeaveApplication.objects.all()
-#     serializer_class = LeaveApplicationSerializer
-
-#     def get(self, request, *args, **kwargs):
-#         """
-#         Return a list of all users.
-#         """
-#         # current_user = request.user.pk
-#         user_id = request.META.get('HTTP_AUTHORIZATION')
-
-#         # data = {'token': token}
-#         # valid_data = TokenBackend(algorithm='HS256').decode(token,verify=False)
-#         # user = valid_data['user']
-#         # request.user = user
-        
-#         queryset = LeaveApplication.objects.filter(employee=user_id)
-#         serializer = LeaveApplicationSerializer(queryset, many=True)
-#         return Response(serializer.data)
-
-
-class CountUserAndDepartmentView(APIView):
-    
-    def get(self, request, *args, **kwargs):
-        data = [{"data": 0,}]
-        serializer = CountUserAndDepartment(data, many=True)
-        return Response(serializer.data)
