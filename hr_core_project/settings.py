@@ -64,11 +64,13 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:5173",
     "https://orange-hr-lab.netlify.app",
+    "https://hr-lab.onrender.com",
 ]
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:5173',
     "http://127.0.0.1:5173",
     "https://orange-hr-lab.netlify.app",
+    "https://hr-lab.onrender.com",
 )
 
 AUTH_USER_MODEL = 'users.User'
