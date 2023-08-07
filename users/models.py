@@ -61,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class GenderType(models.TextChoices):
         Male = 'Male'
         Female = 'Female'
-        Other = 'other'
+        Other = 'Other'
         Not_Known = 'Not Known'
 
     email = models.EmailField(_('email address'), unique=True)
